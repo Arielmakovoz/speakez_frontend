@@ -17,30 +17,34 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
     isPaused,
   } = useAudioRecorder();
 
-  const [serverResponse, setServerResponse] = useState("");
+  const [serverResponse, setServerResponse] = useState<string | null>(null);
 
   useEffect(() => {
     if (!recordingBlob) return;
-    // Handle sending the recording to the Flask server
+
+    const sendRecording = async (blob: Blob) => {
+      try {
+        const formData = new FormData();
+        formData.append("audio", blob);
+
+        const response = await fetch("/api/process_audio", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setServerResponse(data.message);
+        } else {
+          console.error("Error sending recording: Status ", response.status);
+        }
+      } catch (error) {
+        console.error("Error sending recording:", error);
+      }
+    };
+
     sendRecording(recordingBlob);
   }, [recordingBlob]);
-
-  const sendRecording = async (blob: Blob) => {
-    try {
-      const formData = new FormData();
-      formData.append("audio", blob);
-
-      const response = await fetch("/api/process_audio", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      setServerResponse(data.message);
-    } catch (error) {
-      console.error("Error sending recording:", error);
-    }
-  };
 
   return (
     <>
