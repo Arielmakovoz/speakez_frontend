@@ -21,15 +21,34 @@ const AudioButtons: React.FC<{
     recordingBlob,
     isRecording,
     isPaused,
-    // recordingTime, // How long the recording is so far
-    // mediaRecorder, // "The current mediaRecorder in use. Can be undefined in case recording is not in progress"
   } = useAudioRecorder();
 
   useEffect(() => {
     if (!recordingBlob) return;
     addAudioElement(recordingBlob);
-    // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob]);
+
+  const uploadAudioToServer = async () => {
+    if (!recordingBlob) return;
+
+    const formData = new FormData();
+    formData.append("audio", recordingBlob, "recorded_audio.wav");
+
+    try {
+      const response = await fetch("/api/process_audio", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log("Audio uploaded successfully");
+      } else {
+        console.error("Error uploading audio");
+      }
+    } catch (error) {
+      console.error("Error uploading audio:", error);
+    }
+  };
 
   return (
     <>
@@ -55,18 +74,10 @@ const AudioButtons: React.FC<{
           onClick={() => {
             stopRecording();
             setDidFinish(true);
+            uploadAudioToServer(); // Upload the audio to the server after stopping recording
           }}
         />
       )}
-      {/* <AudioRecorder
-        onRecordingComplete={addAudioElement}
-        audioTrackConstraints={{
-          noiseSuppression: true,
-          echoCancellation: true,
-        }}
-        downloadOnSavePress={true}
-        downloadFileExtension="webm"
-      /> */}
     </>
   );
 };
