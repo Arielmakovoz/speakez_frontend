@@ -1,4 +1,4 @@
-mport React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
