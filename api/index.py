@@ -18,4 +18,4 @@ def process_audio():
 
     return jsonify({'message': 'Audio received successfully'})
 
-# useless changes
+# just disable eslint and it should wok from there
