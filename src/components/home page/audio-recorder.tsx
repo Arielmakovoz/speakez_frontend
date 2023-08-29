@@ -74,7 +74,7 @@ const AudioButtons: React.FC<{
           onClick={() => {
             stopRecording();
             setDidFinish(true);
-            uploadAudioToServer(); // Upload the audio to the server after stopping recording
+            await uploadAudioToServer(); // Upload the audio to the server after stopping recording
           }}
         />
       )}
