@@ -1,9 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 
-const AudioButtons: React.FC = () => {
+const addAudioElement = (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
+  const audio = document.createElement("audio");
+  audio.src = url;
+  audio.controls = true;
+  document.body.appendChild(audio);
+};
+
+const AudioButtons: React.FC<{
+  setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setDidFinish }) => {
   const {
     startRecording,
     stopRecording,
@@ -11,32 +21,15 @@ const AudioButtons: React.FC = () => {
     recordingBlob,
     isRecording,
     isPaused,
+    // recordingTime, // How long the recording is so far
+    // mediaRecorder, // "The current mediaRecorder in use. Can be undefined in case recording is not in progress"
   } = useAudioRecorder();
-
-  const [serverResponse, setServerResponse] = useState("");
 
   useEffect(() => {
     if (!recordingBlob) return;
-    // Handle sending the recording to the Flask server
-    sendRecording(recordingBlob);
+    addAudioElement(recordingBlob);
+    // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob]);
-
-  const sendRecording = async (blob: Blob) => {
-    try {
-      const formData = new FormData();
-      formData.append("audio", blob);
-
-      const response = await fetch("/api/process_audio", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      setServerResponse(data.message);
-    } catch (error) {
-      console.error("Error sending recording:", error);
-    }
-  };
 
   return (
     <>
@@ -48,7 +41,10 @@ const AudioButtons: React.FC = () => {
         )
       ) : (
         <IconButton
-          onClick={startRecording}
+          onClick={() => {
+            startRecording();
+            setDidFinish(false);
+          }}
           Icon={BsPlayFill}
         />
       )}
@@ -56,10 +52,21 @@ const AudioButtons: React.FC = () => {
       {isRecording && (
         <IconButton
           Icon={BsStopFill}
-          onClick={() => stopRecording()}
+          onClick={() => {
+            stopRecording();
+            setDidFinish(true);
+          }}
         />
       )}
-      {serverResponse && <p>Server Response: {serverResponse}</p>}
+      {/* <AudioRecorder
+        onRecordingComplete={addAudioElement}
+        audioTrackConstraints={{
+          noiseSuppression: true,
+          echoCancellation: true,
+        }}
+        downloadOnSavePress={true}
+        downloadFileExtension="webm"
+      /> */}
     </>
   );
 };
