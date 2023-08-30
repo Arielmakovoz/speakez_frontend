@@ -4,10 +4,9 @@ import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 
 interface AudioButtonsProps {
-  //@ts-ignore
   setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }
-//@ts-ignore
+
 const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
   const {
     startRecording,
@@ -36,7 +35,6 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
         if (response.ok) {
           const data = await response.json();
-          //@ts-ignore
           setServerResponse(data.message);
         } else {
           console.error("Error sending recording: Status ", response.status);
