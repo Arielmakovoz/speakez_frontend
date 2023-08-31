@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
@@ -44,7 +47,7 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
       }
     };
 
-    sendRecording(recordingBlob);
+    sendRecording(recordingBlob).catch((e) => console.error(e));
   }, [recordingBlob]);
 
   const blobToBase64 = (blob: Blob) =>
