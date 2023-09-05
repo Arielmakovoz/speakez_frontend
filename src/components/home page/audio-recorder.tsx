@@ -27,13 +27,12 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
     const sendRecording = async (blob: Blob) => {
       try {
-        const base64Audio = await blobToBase64(blob);
+        const formData = new FormData();
+        formData.append("audio", blob, "recording.wav"); // Specify "recording.wav" as the filename
+
         const response = await fetch("/api/process_audio", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ audio: base64Audio }),
+          body: formData,
         });
 
         if (response.ok) {
@@ -49,16 +48,6 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
     sendRecording(recordingBlob).catch((e) => console.error(e));
   }, [recordingBlob]);
-
-  const blobToBase64 = (blob: Blob) =>
-    new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        resolve(base64data);
-      };
-      reader.readAsDataURL(blob);
-    });
 
   return (
     <>
