@@ -1,20 +1,10 @@
 // index.js
 const express = require('express');
 
-const app = express();
-const PORT = 4000;
-
-app.listen(PORT, () => {
-  console.log(`API listening on PORT ${PORT} `);
-});
-
-app.get('/', (req, res) => {
-  console.log('Hey this is my API running 🥳');
-});
-
-app.get('/about', (req, res) => {
-  console.log('This is my about route..... ');
-});
-
+export default function handler(req, res) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ name: 'John Doe' });
+  }
 // Export the Express API
 module.exports = app;
