@@ -1,2 +1,1 @@
-if ("webkitSpeechRecognition" in window) {
-  let webkitspeechRecognition = new speechRecognition();
+const recognition = new SpeechRecognition();
