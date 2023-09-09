@@ -46,6 +46,9 @@
   "ct3aMetadata": {
     "initVersion": "7.15.0"
   },
+  "types": [
+    "@types/web-speech-api"
+  ],
   "engines": {
     "node": ">=18"
   }
