@@ -11,10 +11,11 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { message } = req.body;
-
-  if (message === 'hi') {
-    res.status(200).json({ message: 'Just got it' });
+  // Check if the request contains a file with the field name "audio"
+  if (req.body && req.body.audio instanceof Buffer) {
+    // Replace this part with your processing logic for the audio file
+    // For now, it simply responds with "Audio file gotten"
+    res.status(200).json({ message: 'Audio file gotten' });
   } else {
     res.status(200).json({ message: 'Hello from Next.js!' });
   }

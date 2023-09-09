@@ -32,10 +32,7 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
         const response = await fetch("/api/hello", {
           method: "POST",
-          body: JSON.stringify({ message: "hi" }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+          body: formData,
         });
 
         if (response.ok) {
