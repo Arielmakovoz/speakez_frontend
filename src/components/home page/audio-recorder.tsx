@@ -21,6 +21,7 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
   } = useAudioRecorder();
 
   const [serverResponse, setServerResponse] = useState<string | null>(null);
+  const [translation, setTranslation] = useState<string | null>(null);
 
   useEffect(() => {
     if (!recordingBlob) return;
@@ -46,8 +47,46 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
       }
     };
 
-    sendRecording(recordingBlob).catch((e) => console.error(e));
+    if (!isRecording && recordingBlob) {
+      // Perform translation when recording stops
+      translateAudio(recordingBlob);
+    } else {
+      sendRecording(recordingBlob).catch((e) => console.error(e));
+    }
   }, [recordingBlob]);
+
+  const translateAudio = async (blob: Blob) => {
+    try {
+      // Create a new SpeechRecognition instance
+      const recognition = new window.SpeechRecognition();
+      recognition.lang = "en-US"; // Set the language to English or adjust as needed
+      recognition.interimResults = false;
+
+      recognition.onresult = (event) => {
+        const result = event.results[event.results.length - 1];
+        const transcript = result[0].transcript;
+        setTranslation(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+      };
+
+      recognition.onend = () => {
+        recognition.stop();
+      };
+
+      // Start recognition with the audio blob
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.onloadedmetadata = () => {
+        audio.play();
+        recognition.start();
+      };
+    } catch (error) {
+      console.error("Error in translateAudio:", error);
+    }
+  };
 
   return (
     <>
@@ -77,6 +116,7 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
         />
       )}
       {serverResponse && <p>Server Response: {serverResponse}</p>}
+      {translation && <p>Translation: {translation}</p>}
     </>
   );
 };
