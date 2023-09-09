@@ -22,27 +22,6 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
   const [serverResponse, setServerResponse] = useState<string | null>(null);
 
-  const sendHiToHelloAPI = async () => {
-    try {
-      const response = await fetch("/api/hello", {
-        method: "POST",
-        body: JSON.stringify({ message: "hi" }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setServerResponse(data.message);
-      } else {
-        console.error("Error sending 'hi' to API: Status", response.status);
-      }
-    } catch (error) {
-      console.error("Error sending 'hi' to API:", error);
-    }
-  };
-
   useEffect(() => {
     if (!recordingBlob) return;
 
@@ -51,16 +30,16 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
         const formData = new FormData();
         formData.append("audio", blob, "recording.wav"); // Specify "recording.wav" as the filename
 
-        const response = await fetch("/api/process_audio", {
+        const response = await fetch("/api/hello", {
           method: "POST",
-          body: formData,
+          body: "hi",
         });
 
         if (response.ok) {
           const data = await response.json();
           setServerResponse(data.message);
         } else {
-          console.error("Error sending recording: Status", response.status);
+          console.error("Error sending recording: Status ", response.status);
         }
       } catch (error) {
         console.error("Error sending recording:", error);
@@ -97,8 +76,6 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
           }}
         />
       )}
-
-      <IconButton Icon={BsPlayFill} onClick={sendHiToHelloAPI} />
       {serverResponse && <p>Server Response: {serverResponse}</p>}
     </>
   );
