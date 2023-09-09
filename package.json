@@ -24,7 +24,6 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
     "tailwind-merge": "^1.13.2",
-    "web-speech-angular": "github:luixaviles/web-speech-angular",
     "zod": "^3.21.4"
   },
   "devDependencies": {
