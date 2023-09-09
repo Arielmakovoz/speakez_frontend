@@ -29,6 +29,6 @@
     "**/*.cjs",
     "**/*.mjs",
     "**/*.mjs"
-, "src/pages/api/index.js", "src/pages/api/hello.js"  ],
+, "src/pages/api/index.js", "src/pages/api/hello.ts"  ],
   "exclude": ["node_modules"]
 }
