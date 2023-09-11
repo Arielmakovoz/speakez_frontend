@@ -6,6 +6,12 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+  }
+}
+
 interface AudioButtonsProps {
   setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }
