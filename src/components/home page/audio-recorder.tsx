@@ -68,7 +68,7 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
       recognition.lang = "en-US"; // Set the language to English or adjust as needed
       recognition.interimResults = false;
 
-      recognition.onresult = (event) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         const result = event.results[event.results.length - 1];
         const transcript = result[0].transcript;
         setTranslation(transcript);
