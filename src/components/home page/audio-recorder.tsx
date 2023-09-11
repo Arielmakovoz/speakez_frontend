@@ -3,14 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useEffect, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
+import { useSpeechRecognition } from "react-speech-recognition";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
-
-declare global {
-  interface Window {
-    SpeechRecognition: any;
-  }
-}
 
 interface AudioButtonsProps {
   setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,6 +20,8 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
     isRecording,
     isPaused,
   } = useAudioRecorder();
+
+  const { transcript, resetTranscript } = useSpeechRecognition();
 
   const [serverResponse, setServerResponse] = useState<string | null>(null);
   const [translation, setTranslation] = useState<string | null>(null);
@@ -63,32 +60,13 @@ const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
 
   const translateAudio = async (blob: Blob) => {
     try {
-      // Create a new SpeechRecognition instance
-      const recognition = new window.SpeechRecognition();
-      recognition.lang = "en-US"; // Set the language to English or adjust as needed
-      recognition.interimResults = false;
+      // Process the transcribed transcript
+      setTranslation(transcript);
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const result = event.results[event.results.length - 1];
-        const transcript = result[0].transcript;
-        setTranslation(transcript);
-      };
+      // Reset the transcript
+      resetTranscript();
 
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
-      };
-
-      recognition.onend = () => {
-        recognition.stop();
-      };
-
-      // Start recognition with the audio blob
-      const audioUrl = URL.createObjectURL(blob);
-      const audio = new Audio(audioUrl);
-      audio.onloadedmetadata = () => {
-        audio.play();
-        recognition.start();
-      };
+      // Your further processing logic here
     } catch (error) {
       console.error("Error in translateAudio:", error);
     }
