@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 const addAudioElement = (blob: Blob) => {
   const url = URL.createObjectURL(blob);
@@ -45,6 +46,7 @@ const AudioButtons: React.FC<{
       ) : (
         <IconButton
           onClick={() => {
+            SpeechRecognition.startListening;
             startRecording();
             setDidFinish(false);
           }}
