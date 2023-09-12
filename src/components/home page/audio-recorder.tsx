@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/require-await */
 import React, { useEffect, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import { useSpeechRecognition } from "react-speech-recognition";
