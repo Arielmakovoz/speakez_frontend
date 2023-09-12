@@ -1,29 +1,90 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React from 'react';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import React, { useEffect } from "react";
+import { useAudioRecorder } from "react-audio-voice-recorder";
+import type { IconType } from "react-icons";
+import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 
-const Dictaphone = () => {
+const addAudioElement = (blob: Blob) => {
+  const url = URL.createObjectURL(blob);
+  const audio = document.createElement("audio");
+  audio.src = url;
+  audio.controls = true;
+  document.body.appendChild(audio);
+};
+
+const AudioButtons: React.FC<{
+  setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setDidFinish }) => {
   const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition
-  } = useSpeechRecognition();
+    startRecording,
+    stopRecording,
+    togglePauseResume,
+    recordingBlob,
+    isRecording,
+    isPaused,
+    // recordingTime, // How long the recording is so far
+    // mediaRecorder, // "The current mediaRecorder in use. Can be undefined in case recording is not in progress"
+  } = useAudioRecorder();
 
-  if (!browserSupportsSpeechRecognition) {
-    return <span>Browser doesn't support speech recognition.</span>;
-  }
+  useEffect(() => {
+    if (!recordingBlob) return;
+    addAudioElement(recordingBlob);
+    // recordingBlob will be present at this point after 'stopRecording' has been called
+  }, [recordingBlob]);
 
   return (
-    <div>
-      <p>Microphone: {listening ? 'on' : 'off'}</p>
-      <button onClick={SpeechRecognition.startListening}>Start</button>
-      <button onClick={SpeechRecognition.stopListening}>Stop</button>
-      <button onClick={resetTranscript}>Reset</button>
-      <p>{transcript}</p>
-    </div>
+    <>
+      {isRecording ? (
+        isPaused ? (
+          <IconButton onClick={togglePauseResume} Icon={BsPlayFill} />
+        ) : (
+          <IconButton onClick={togglePauseResume} Icon={BsPauseFill} />
+        )
+      ) : (
+        <IconButton
+          onClick={() => {
+            startRecording();
+            setDidFinish(false);
+          }}
+          Icon={BsPlayFill}
+        />
+      )}
+
+      {isRecording && (
+        <IconButton
+          Icon={BsStopFill}
+          onClick={() => {
+            stopRecording();
+            setDidFinish(true);
+          }}
+        />
+      )}
+      {/* <AudioRecorder
+        onRecordingComplete={addAudioElement}
+        audioTrackConstraints={{
+          noiseSuppression: true,
+          echoCancellation: true,
+        }}
+        downloadOnSavePress={true}
+        downloadFileExtension="webm"
+      /> */}
+    </>
   );
 };
-export default Dictaphone;
+
+export default AudioButtons;
+
+const IconButton: React.FC<{ Icon: IconType; onClick: () => void }> = ({
+  Icon,
+  onClick,
+}) => {
+  return (
+    <Icon
+      onClick={onClick}
+      size="1.5rem"
+      className="transition-all text-bg-main-light hover:scale-110 dark:text-bg-main-dark"
+    />
+  );
+};
