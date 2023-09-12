@@ -1,123 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/require-await */
-import React, { useEffect, useState } from "react";
-import { useAudioRecorder } from "react-audio-voice-recorder";
-import { useSpeechRecognition } from "react-speech-recognition";
-import type { IconType } from "react-icons";
-import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
+import React from 'react';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-interface AudioButtonsProps {
-  setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const AudioButtons: React.FC<AudioButtonsProps> = ({ setDidFinish }) => {
+const Dictaphone = () => {
   const {
-    startRecording,
-    stopRecording,
-    togglePauseResume,
-    recordingBlob,
-    isRecording,
-    isPaused,
-  } = useAudioRecorder();
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
 
-  const { transcript, resetTranscript } = useSpeechRecognition();
-
-  const [serverResponse, setServerResponse] = useState<string | null>(null);
-  const [translation, setTranslation] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!recordingBlob) return;
-
-    const sendRecording = async (blob: Blob) => {
-      try {
-        const formData = new FormData();
-        formData.append("audio", blob, "recording.wav"); // Specify "recording.wav" as the filename
-
-        const response = await fetch("/api/hello", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setServerResponse(data.message);
-        } else {
-          console.error("Error sending recording: Status ", response.status);
-        }
-      } catch (error) {
-        console.error("Error sending recording:", error);
-      }
-    };
-
-    if (!isRecording && recordingBlob) {
-      // Perform translation when recording stops
-      translateAudio(recordingBlob);
-    } else {
-      sendRecording(recordingBlob).catch((e) => console.error(e));
-    }
-  }, [recordingBlob]);
-
-  const translateAudio = async (blob: Blob) => {
-    try {
-      // Process the transcribed transcript
-      setTranslation(transcript);
-
-      // Reset the transcript
-      resetTranscript();
-
-      // Your further processing logic here
-    } catch (error) {
-      console.error("Error in translateAudio:", error);
-    }
-  };
+  if (!browserSupportsSpeechRecognition) {
+    return <span>Browser doesn't support speech recognition.</span>;
+  }
 
   return (
-    <>
-      {isRecording ? (
-        isPaused ? (
-          <IconButton onClick={togglePauseResume} Icon={BsPlayFill} />
-        ) : (
-          <IconButton onClick={togglePauseResume} Icon={BsPauseFill} />
-        )
-      ) : (
-        <IconButton
-          onClick={() => {
-            startRecording();
-            setDidFinish(false);
-          }}
-          Icon={BsPlayFill}
-        />
-      )}
-
-      {isRecording && (
-        <IconButton
-          Icon={BsStopFill}
-          onClick={() => {
-            stopRecording();
-            setDidFinish(true);
-          }}
-        />
-      )}
-      {serverResponse && <p>Server Response: {serverResponse}</p>}
-      {translation && <p>Translation: {translation}</p>}
-    </>
+    <div>
+      <p>Microphone: {listening ? 'on' : 'off'}</p>
+      <button onClick={SpeechRecognition.startListening}>Start</button>
+      <button onClick={SpeechRecognition.stopListening}>Stop</button>
+      <button onClick={resetTranscript}>Reset</button>
+      <p>{transcript}</p>
+    </div>
   );
 };
-
-export default AudioButtons;
-
-const IconButton: React.FC<{ Icon: IconType; onClick: () => void }> = ({
-  Icon,
-  onClick,
-}) => {
-  return (
-    <Icon
-      onClick={onClick}
-      size="1.5rem"
-      className="transition-all text-bg-main-light hover:scale-110 dark:text-bg-main-dark"
-    />
-  );
-};
+export default Dictaphone;
