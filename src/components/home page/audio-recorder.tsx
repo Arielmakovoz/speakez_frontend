@@ -67,7 +67,7 @@ const AudioButtons: React.FC<{
       ) : (
         <IconButton
           onClick={() => {
-            void SpeechRecognition.startListening();
+            void SpeechRecognition.startListening({continuous: true});
             startRecording();
             setDidFinish(false);
           }}
