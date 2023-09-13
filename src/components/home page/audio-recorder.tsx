@@ -20,6 +20,13 @@ const AudioButtons: React.FC<{
   setDidFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setDidFinish }) => {
   const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
+  const {
     startRecording,
     stopRecording,
     togglePauseResume,
@@ -30,12 +37,25 @@ const AudioButtons: React.FC<{
     // mediaRecorder, // "The current mediaRecorder in use. Can be undefined in case recording is not in progress"
   } = useAudioRecorder();
 
+
   useEffect(() => {
     if (!recordingBlob) return;
     addAudioElement(recordingBlob);
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob]);
 
+  // if (!browserSupportsSpeechRecognition) {
+  //   return <span>Browser doesn't support speech recognition.</span>;
+  // }
+  // <div>
+  //   <button onClick={() => SpeechRecognition.startListening()}>Start</button>
+  //   <button onClick={() => SpeechRecognition.stopListening()}>Stop</button>
+  //   <button onClick={() => resetTranscript()}>Reset</button>
+  //   <p>{transcript}</p>
+  // </div>
+
+  // use of void is to prevent eslint from complaining, somehow the promises get awaited
+  // https://github.com/orgs/react-hook-form/discussions/8622#discussioncomment-3915517
   return (
     <>
       {isRecording ? (
@@ -47,7 +67,7 @@ const AudioButtons: React.FC<{
       ) : (
         <IconButton
           onClick={() => {
-            SpeechRecognition.startListening;
+            void SpeechRecognition.startListening();
             startRecording();
             setDidFinish(false);
           }}
@@ -59,6 +79,7 @@ const AudioButtons: React.FC<{
         <IconButton
           Icon={BsStopFill}
           onClick={() => {
+            void SpeechRecognition.stopListening();
             stopRecording();
             setDidFinish(true);
           }}
@@ -73,6 +94,9 @@ const AudioButtons: React.FC<{
         downloadOnSavePress={true}
         downloadFileExtension="webm"
       /> */}
+      <div>
+        {transcript}
+      </div>
     </>
   );
 };
