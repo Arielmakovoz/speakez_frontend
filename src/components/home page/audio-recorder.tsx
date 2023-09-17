@@ -33,10 +33,7 @@ const AudioButtons: React.FC<{
     recordingBlob,
     isRecording,
     isPaused,
-    // recordingTime, // How long the recording is so far
-    // mediaRecorder, // "The current mediaRecorder in use. Can be undefined in case recording is not in progress"
   } = useAudioRecorder();
-
 
   useEffect(() => {
     if (!recordingBlob) return;
@@ -44,18 +41,30 @@ const AudioButtons: React.FC<{
     // recordingBlob will be present at this point after 'stopRecording' has been called
   }, [recordingBlob]);
 
-  // if (!browserSupportsSpeechRecognition) {
-  //   return <span>Browser doesn't support speech recognition.</span>;
-  // }
-  // <div>
-  //   <button onClick={() => SpeechRecognition.startListening()}>Start</button>
-  //   <button onClick={() => SpeechRecognition.stopListening()}>Stop</button>
-  //   <button onClick={() => resetTranscript()}>Reset</button>
-  //   <p>{transcript}</p>
-  // </div>
+  const sendAudioToServer = async () => {
+    if (!recordingBlob) return;
 
-  // use of void is to prevent eslint from complaining, somehow the promises get awaited
-  // https://github.com/orgs/react-hook-form/discussions/8622#discussioncomment-3915517
+    try {
+      const formData = new FormData();
+      formData.append("audio", recordingBlob);
+
+      const response = await fetch("/api/upload-audio", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Server response:", data);
+        // Handle the server response here
+      } else {
+        console.error("Error uploading audio file");
+      }
+    } catch (error) {
+      console.error("Error uploading audio file:", error);
+    }
+  };
+
   return (
     <>
       {isRecording ? (
@@ -67,7 +76,7 @@ const AudioButtons: React.FC<{
       ) : (
         <IconButton
           onClick={() => {
-            void SpeechRecognition.startListening({continuous: true});
+            void SpeechRecognition.startListening({ continuous: true });
             startRecording();
             setDidFinish(false);
           }}
@@ -81,22 +90,13 @@ const AudioButtons: React.FC<{
           onClick={() => {
             void SpeechRecognition.stopListening();
             stopRecording();
+            sendAudioToServer(); // Send audio when stopping recording
             setDidFinish(true);
           }}
         />
       )}
-      {/* <AudioRecorder
-        onRecordingComplete={addAudioElement}
-        audioTrackConstraints={{
-          noiseSuppression: true,
-          echoCancellation: true,
-        }}
-        downloadOnSavePress={true}
-        downloadFileExtension="webm"
-      /> */}
-      <div>
-        {transcript}
-      </div>
+
+      <div>{transcript}</div>
     </>
   );
 };
