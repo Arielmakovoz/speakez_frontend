@@ -7,7 +7,14 @@ await import("./src/env.mjs");
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
-
+  rewrites: async () => {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/'
+      },
+    ]
+  },
   /**
    * If you have `experimental: { appDir: true }` set, then you must comment the below `i18n` config
    * out.
