@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/api/upload-audio')
+@app.route('/api/upload-audio', methods=['POST'])
 def upload_audio():
     try:
         audio_file = request.files['audio']
