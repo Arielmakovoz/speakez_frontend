@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from hardonset import hardonest_tracker
 
 app = Flask(__name__)
 
@@ -7,6 +8,7 @@ def upload_audio():
     try:
         audio_file = request.files['audio']
         if audio_file:
+            hardonest_tracker(audio_file)
             # Process the audio file as needed (e.g., save it to disk, perform analysis)
             # You can add your audio processing logic here
 
