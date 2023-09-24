@@ -9,10 +9,6 @@ def hardonest_tracker(audio_file):
 
     audio_data, sr_ = librosa.load(audio_file)
 
-    onset_strength_lst = librosa.onset.onset_strength(y=audio_data, sr=sr_)
-
-    onset_frames = librosa.onset.onset_detect(onset_envelope=onset_strength_lst, sr=sr_)
-    times = librosa.times_like(onset_strength_lst, sr=sr_)
 
 @app.route('/api/upload-audio', methods=['POST'])
 def upload_audio():
