@@ -11,7 +11,7 @@ def upload_audio():
             # You can add your audio processing logic here
 
             # Send a response to the client
-            return jsonify({"message": "Audio file received and processed successfully"})
+            return jsonify({"message": f" {type(audio_file)} Audio file received and processed successfully"})
         else:
             return jsonify({"message": "No audio file received"}), 400
     except Exception as e:
