@@ -90,7 +90,7 @@ const AudioButtons: React.FC<{
           onClick={() => {
             void SpeechRecognition.stopListening();
             stopRecording();
-            void sendAudioToServer(); // Send audio when stopping recording
+            sendAudioToServer(); // Send audio when stopping recording
             setDidFinish(true);
           }}
         />

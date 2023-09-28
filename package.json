@@ -20,6 +20,7 @@
     "framer-motion": "^10.12.18",
     "next": "^13.4.2",
     "nextjs": "^0.0.3",
+    "node-wav": "^0.0.2",
     "react": "^18.2.0",
     "react-audio-voice-recorder": "^2.1.2",
     "react-dom": "18.2.0",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@types/eslint": "^8.37.0",
     "@types/node": "^18.16.0",
+    "@types/node-wav": "^0.0.0",
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
