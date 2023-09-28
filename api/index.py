@@ -1,8 +1,4 @@
 from flask import Flask, request, jsonify
-import librosa
-import matplotlib.pyplot as plt
-import numpy as np
-
 app = Flask(__name__)
 
 @app.route('/api/upload-audio', methods=['POST'])
