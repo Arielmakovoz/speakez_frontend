@@ -7,9 +7,6 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { WaveFile } from 'wavefile';
-
-let wav = new WaveFile();
 
 const addAudioElement = (blob: Blob) => {
   const url = URL.createObjectURL(blob);
