@@ -28,6 +28,7 @@
     "react-speech-recognition": "^3.10.0",
     "regenerator-runtime": "^0.14.0",
     "tailwind-merge": "^1.13.2",
+    "wavefile": "^11.0.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

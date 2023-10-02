@@ -6,7 +6,6 @@ def upload_audio():
     try:
         audio_file = request.files['audio']
         if audio_file:
-            audio_file.read()
             # Process the audio file as needed (e.g., save it to disk, perform analysis)
             # You can add your audio processing logic here
 
