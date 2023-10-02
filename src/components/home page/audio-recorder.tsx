@@ -7,7 +7,9 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import WaveFile from 'wavefile';
+import { WaveFile } from 'wavefile';
+
+let wav = new WaveFile();
 
 const addAudioElement = (blob: Blob) => {
   const url = URL.createObjectURL(blob);
@@ -15,23 +17,6 @@ const addAudioElement = (blob: Blob) => {
   audio.src = url;
   audio.controls = true;
   document.body.appendChild(audio);
-};
-
-const convertToWaveFormat = async (blob: Blob): Promise<Blob> => {
-  try {
-    const audioData = new Uint8Array(await blob.arrayBuffer());
-    const waveFile = new WaveFile();
-
-    // Set the wave file properties based on your audio settings
-    waveFile.fromScratch(1, 44100, '16', audioData);
-
-    // Convert to a Blob with wave format
-    const waveBlob = new Blob([waveFile.toBuffer()], { type: 'audio/wav' });
-    return waveBlob;
-  } catch (error) {
-    console.error('Error converting to wave format:', error);
-    return blob; // Return the original blob in case of an error
-  }
 };
 
 const AudioButtons: React.FC<{
@@ -63,9 +48,8 @@ const AudioButtons: React.FC<{
     if (!recordingBlob) return;
 
     try {
-      const audioBlob = await convertToWaveFormat(recordingBlob); // Convert to wave format
       const formData = new FormData();
-      formData.append("audio", audioBlob);
+      formData.append("audio", recordingBlob);
 
       const response = await fetch("/api/upload-audio", {
         method: "POST",
