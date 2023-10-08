@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
@@ -35,10 +35,30 @@ const AudioButtons: React.FC<{
     isPaused,
   } = useAudioRecorder();
 
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [endTime, setEndTime] = useState<number | null>(null);
+  const [wordCount, setWordCount] = useState<number>(0);
+  const [wpm, setWPM] = useState<number | null>(null);
+
   useEffect(() => {
     if (!recordingBlob) return;
     addAudioElement(recordingBlob);
     // recordingBlob will be present at this point after 'stopRecording' has been called
+
+    // Calculate the end time when the audio recording finishes
+    setEndTime(Date.now());
+
+    // Calculate the word count from the transcript
+    const words = transcript.trim().split(/\s+/);
+    setWordCount(words.length);
+
+    // Calculate WPM if we have a start time and end time
+    if (startTime && endTime) {
+      const totalTimeInSeconds = (endTime - startTime) / 1000; // Convert to seconds
+      const totalTimeInMinutes = totalTimeInSeconds / 60; // Convert to minutes
+      const calculatedWPM = wordCount / totalTimeInMinutes;
+      setWPM(calculatedWPM);
+    }
   }, [recordingBlob]);
 
   const sendAudioToServer = async () => {
@@ -79,6 +99,8 @@ const AudioButtons: React.FC<{
             void SpeechRecognition.startListening({ continuous: true });
             startRecording();
             setDidFinish(false);
+            // Set the start time when recording starts
+            setStartTime(Date.now());
           }}
           Icon={BsPlayFill}
         />
@@ -97,6 +119,12 @@ const AudioButtons: React.FC<{
       )}
 
       <div>{transcript}</div>
+
+      {wpm !== null && (
+        <div>
+          <p>Words per Minute (WPM): {wpm.toFixed(2)}</p>
+        </div>
+      )}
     </>
   );
 };
