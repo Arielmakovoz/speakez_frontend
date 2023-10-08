@@ -41,7 +41,7 @@ const item = {
 };
 
 const Results: React.FC<ResultSectionProps> = ({
-  wpm,
+  wpm, // Receive the WPM value as a prop
   acc,
   stutters,
   hardOnset,
@@ -60,7 +60,7 @@ const Results: React.FC<ResultSectionProps> = ({
     >
       <ResultBox className="flex flex-col items-center justify-center">
         <p className="text-center text-2xl font-medium">WPM</p>
-        {variant === "visible" && <Gauge amount={wpm} total={120} />}
+        {variant === "visible" && <Gauge amount={wpm} total={wpm} />} {/* Replace 120 with the WPM prop */}
       </ResultBox>
       <ResultBox className="flex flex-col items-center">
         <p className="text-center text-2xl font-medium">ACC</p>

@@ -7,6 +7,7 @@ import { useAudioRecorder } from "react-audio-voice-recorder";
 import type { IconType } from "react-icons";
 import { BsPauseFill, BsPlayFill, BsStopFill } from "react-icons/bs";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import Results from "./results";
 
 const addAudioElement = (blob: Blob) => {
   const url = URL.createObjectURL(blob);
@@ -104,7 +105,7 @@ const AudioButtons: React.FC<{
         />
       )}
 
-      {wpm !== null && <div>WPM: {wpm.toFixed(2)}</div>}
+      {wpm !== null && <Results wpm={wpm} acc={0} stutters={0} hardOnset={0} bars={[]} fillers={[]} />}
       <div>{transcript}</div>
     </>
   );
