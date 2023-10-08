@@ -65,7 +65,7 @@ const AudioButtons: React.FC<{
       if (response.ok) {
         const data = await response.json();
         console.log("Server response:", data);
-        // Handle the server response here
+        // Handle the server response hereee
       } else {
         console.error("Error uploading audio file");
       }
