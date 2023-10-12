@@ -16,7 +16,7 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
         content={`${title ? title + " | " : ""}SpeakEz`}
       />
       <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://speakez.vercel.app" />
+      <meta property="og:url" content="https://speakez-homepage.vercel.app/" />
       <meta
         property="og:description"
         content="SpeakEZ is an interactive speaking test with the objective of helping people with speaking disfluency (stuttering, cluttering, etc), improving overall speaking clarity, speed, vocalization, articulation as well as other factors necessary in healthy communication."
