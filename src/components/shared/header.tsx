@@ -15,7 +15,7 @@ export const Header: React.FC<{ title?: string }> = ({ title }) => {
         property="og:title"
         content={`${title ? title + " | " : ""}SpeakEz`}
       />
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content="https://speakez-homepage.vercel.app/" />
       <meta property="og:url" content="https://speakez-homepage.vercel.app/" />
       <meta
         property="og:description"
