@@ -104,9 +104,8 @@ const AudioButtons: React.FC<{
           }}
         />
       )}
-
-      {wpm !== null && <Results wpm={wpm} acc={0} stutters={0} hardOnset={0} bars={[]} fillers={[]} />}
-      <div>{transcript}</div>
+      export { wpm };
+      <div>{transcript}</div> 
     </>
   );
 };
